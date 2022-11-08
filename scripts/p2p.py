@@ -15,6 +15,7 @@ import math
 import numpy as np
 from functools import partial
 from collections import OrderedDict
+import matplotlib.pyplot as plt
 
 import fiona
 from fiona.crs import from_epsg
@@ -60,24 +61,24 @@ def itmlogic_p2p(main_user_defined_parameters, surface_profile_m):
     prop['eps'] = 15
 
     # Terrain conductivity (S/m)
-    prop['sgm']   = 0.005
+    prop['sgm']   = 0.5
 
     # Climate selection (1=equatorial,
     # 2=continental subtropical, 3=maritime subtropical,
     # 4=desert, 5=continental temperate,
     # 6=maritime temperate overland,
     # 7=maritime temperate, oversea (5 is the default)
-    prop['klim']  =   5
+    prop['klim']  =   2
 
     # Surface refractivity (N-units): also controls effective Earth radius
-    prop['ens0']  =   314
+    prop['ens0']  =   360
 
     #DEFINE STATISTICAL PARAMETERS
     # Confidence  levels for predictions
     qc = [50, 90, 10]
 
     # Reliability levels for predictions
-    qr = [1, 10, 50, 90, 99]
+    qr = [70]
 
     # Number of points describing profile -1
     pfl = []
@@ -180,6 +181,7 @@ def itmlogic_p2p(main_user_defined_parameters, surface_profile_m):
     ## +20=interference
 
     #Free space loss in db
+
     fs = db * np.log(2 * prop['wn'] * prop['dist'])
 
     #Used to classify path based on comparison of current distance to computed
@@ -208,11 +210,6 @@ def itmlogic_p2p(main_user_defined_parameters, surface_profile_m):
     print('Confidence levels {}, {}, {}'.format(
         str(qc[0]), str(qc[1]), str(qc[2])))
 
-    # Confidence  levels for predictions
-    qc = [50, 90, 10]
-
-    # Reliability levels for predictions
-    qr = [1, 10, 50, 90, 99]
 
     output = []
     for jr in range(0, (nr)):
@@ -220,6 +217,7 @@ def itmlogic_p2p(main_user_defined_parameters, surface_profile_m):
             #Compute corrections to free space loss based on requested confidence
             #and reliability quantities
             avar1, prop = avar(zr[jr], 0, zc[jc], prop)
+            print("avar= " + str(avar1))
             output.append({
                 'distance_km': prop['d'],
                 'reliability_level_%': qr[jr],
@@ -340,6 +338,22 @@ def straight_line_from_points(a, b):
 
     return line
 
+def plot_distance(terrain_profile,dist_km):
+
+    step = dist_km/len(terrain_profile)
+    distancias = []
+    for i in range(len(terrain_profile)):
+        distancias.append(step*i)
+
+    plt.figure(figsize=(10,6))
+    plt.plot(distancias,terrain_profile,'g')
+    plt.fill_between(distancias,terrain_profile,color='green')
+    #plt.plot([distancias[0],distancias[-1]] ,[elevat[0]+PONTO1.torre, elevat[-1]+PONTO2.torre],'--',color='black',linewidth=0.8)
+    #plt.vlines(distancias[0],elevat[0],elevat[0]+PONTO1.torre,colors='r',linewidth=2.0)
+    #plt.vlines(distancias[-1],elevat[-1],elevat[-1]+PONTO2.torre,colors='r',linewidth=2.0)
+    #plt.ylim(min(elevat)-min(elevat)*0.2, max(elevat)*1.2)     # set the ylim to bottom, top
+    plt.title("Enlace ")
+    plt.show()
 
 if __name__ == '__main__':
 
@@ -357,16 +371,16 @@ if __name__ == '__main__':
 
     #Define radio operating frequency (MHz)
     # main_user_defined_parameters['fmhz'] = 573.3
-    main_user_defined_parameters['fmhz']  =  41.5
+    main_user_defined_parameters['fmhz']  =  915
 
     #Define distance between terminals in km (from Longley Rice docs)
     main_user_defined_parameters['d'] = 77.8
 
     #Define antenna heights - Antenna 1 height (m) # Antenna 2 height (m)
-    main_user_defined_parameters['hg'] = [143.9, 8.5]
+    main_user_defined_parameters['hg'] = [15, 5]
 
     #Polarization selection (0=horizontal, 1=vertical)
-    main_user_defined_parameters['ipol'] = 0
+    main_user_defined_parameters['ipol'] = 1
 
     #Original surface profile from Longley Rice docs
     original_surface_profile_m = [
@@ -388,7 +402,7 @@ if __name__ == '__main__':
         'type': 'Feature',
         'geometry': {
             'type': 'Point',
-            'coordinates': (-0.07491679518573545, 51.42413477117786)
+            'coordinates': (-54.588757, -25.407472)
         },
         'properties': {
             'id': 'Crystal Palace radio transmitter'
@@ -400,7 +414,7 @@ if __name__ == '__main__':
         'type': 'Feature',
         'geometry': {
             'type': 'Point',
-            'coordinates': (-0.8119433954872186, 51.94972494521946)
+            'coordinates': (-54.615278, -25.413056)
         },
         'properties': {
             'id': 'Mursley'
@@ -412,15 +426,18 @@ if __name__ == '__main__':
 
     #Run terrain module
     measured_terrain_profile, distance_km, points = terrain_p2p(
-        os.path.join(dem_folder, 'ASTGTM2_N51W001_dem.tif'), line)
+        os.path.join(dem_folder, 'ASTGTMV003_S26W055_dem.tif'), line)
     print('Distance is {}km'.format(distance_km))
 
     #Check (out of interest) how many measurements are in each profile
     print('len(measured_terrain_profile) {}'.format(len(measured_terrain_profile)))
     print('len(original_surface_profile_m) {}'.format(len(original_surface_profile_m)))
+    plot_distance(measured_terrain_profile,distance_km)
 
+
+    main_user_defined_parameters['d'] = distance_km
     #Run model and get output
-    output = itmlogic_p2p(main_user_defined_parameters, original_surface_profile_m)
+    output = itmlogic_p2p(main_user_defined_parameters, measured_terrain_profile)
 
     #Grab coordinates for transmitter and receiver for writing to .csv
     transmitter_x = transmitter['geometry']['coordinates'][0]
