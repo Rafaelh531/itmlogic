@@ -217,7 +217,7 @@ def itmlogic_p2p(main_user_defined_parameters, surface_profile_m):
             #Compute corrections to free space loss based on requested confidence
             #and reliability quantities
             avar1, prop = avar(zr[jr], 0, zc[jc], prop)
-            print("avar= " + str(avar1))
+            print("avar= " + str(fs + avar1))
             output.append({
                 'distance_km': prop['d'],
                 'reliability_level_%': qr[jr],
@@ -432,7 +432,7 @@ if __name__ == '__main__':
     #Check (out of interest) how many measurements are in each profile
     print('len(measured_terrain_profile) {}'.format(len(measured_terrain_profile)))
     print('len(original_surface_profile_m) {}'.format(len(original_surface_profile_m)))
-    plot_distance(measured_terrain_profile,distance_km)
+    #plot_distance(measured_terrain_profile,distance_km)
 
 
     main_user_defined_parameters['d'] = distance_km

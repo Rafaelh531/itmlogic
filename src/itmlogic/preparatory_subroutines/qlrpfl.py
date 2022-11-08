@@ -86,5 +86,5 @@ def qlrpfl(prop):
         prop['lvar'] = 5
 
     prop = lrprop(0, prop)
-
+    print(prop)
     return prop
