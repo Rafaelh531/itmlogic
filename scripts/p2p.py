@@ -434,7 +434,7 @@ if __name__ == '__main__':
     #print('len(original_surface_profile_m) {}'.format(len(original_surface_profile_m)))
    
    
-    #plot_distance(measured_terrain_profile,distance_km)
+    plot_distance(measured_terrain_profile,distance_km)
 
 
     main_user_defined_parameters['d'] = distance_km
