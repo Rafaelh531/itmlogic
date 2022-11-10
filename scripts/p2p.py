@@ -414,7 +414,7 @@ if __name__ == '__main__':
         'type': 'Feature',
         'geometry': {
             'type': 'Point',
-            'coordinates': (-54.615278, -25.413056)
+            'coordinates': (-54.489399,-25.407951)
         },
         'properties': {
             'id': 'Mursley'
