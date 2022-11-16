@@ -397,12 +397,51 @@ if __name__ == '__main__':
     #     137, 140, 144, 147, 150, 152, 159
     # ]
 
+
+
+
+#ESTAÇÃO_CENTRAL= [-25.40798486,-54.58897424]
+#IATE_CLUBE= [-25.555556,-54.591389]
+#PEDRO_ORTELLADO= [-25.413056,-54.615278]
+#PONTE_DA_AMIZADE= [-25.511944,54.603333]
+#R_11_MONDAY= [-25.613889,-54.599722]
+#R_4= [-25.441667,-54.602778]
+#PAULISTANIA= [-25.266667,-54.433333]
+#ENSECADEIRA_MD_MONTANTE= [-25.413056,-54.615278]
+#ENSECADEIRA_MD_JUSANTE= [-25.413056,-54.615278]
+#NOVO_POSTO_SILVA = [-25.575,-54.675]
+
+#ESTAÇÃO_CENTRAL= (-54.58897424,-25.40798486)
+#IATE_CLUBE= (-54.591389,-25.555556)
+#PEDRO_ORTELLADO= (-54.615278,-25.413056)
+#PONTE_DA_AMIZADE= (-54.603333,-25.511944)
+#R_11_MONDAY= (-54.599722,-25.613889)
+#R_4= (-54.602778,-25.441667)
+#PAULISTANIA= (-54.433333,-25.266667)
+#ENSECADEIRA_MD_MONTANTE= (-54.615278,-25.413056)
+#ENSECADEIRA_MD_JUSANTE= (-54.615278,-25.413056)
+#NOVO_POSTO_SILVA = (-54.675,-25.575)
+
+
+    ESTAÇÃO_CENTRAL= (-54.58897424,-25.40798486)
+    IATE_CLUBE= (-54.591389,-25.555556)
+    PEDRO_ORTELLADO= (-54.615278,-25.413056)
+    PONTE_DA_AMIZADE= (-54.603333,-25.511944)
+    R_11_MONDAY= (-54.599722,-25.613889)
+    R_4= (-54.602778,-25.441667)
+    PAULISTANIA= (-54.433333,-25.266667)
+    ENSECADEIRA_MD_MONTANTE= (-54.615278,-25.413056)
+    ENSECADEIRA_MD_JUSANTE= (-54.615278,-25.413056)
+    NOVO_POSTO_SILVA = (-54.675,-25.575)
+
+
+
     #Create new geojson for Crystal Palace radio transmitter
     transmitter = {
         'type': 'Feature',
         'geometry': {
             'type': 'Point',
-            'coordinates': (-54.588757, -25.407472)
+            'coordinates': ESTAÇÃO_CENTRAL,
         },
         'properties': {
             'id': 'Crystal Palace radio transmitter'
@@ -414,7 +453,7 @@ if __name__ == '__main__':
         'type': 'Feature',
         'geometry': {
             'type': 'Point',
-            'coordinates': (-54.489399,-25.407951)
+            'coordinates': PEDRO_ORTELLADO
         },
         'properties': {
             'id': 'Mursley'
