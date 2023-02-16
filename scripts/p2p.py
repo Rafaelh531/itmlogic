@@ -338,21 +338,28 @@ def straight_line_from_points(a, b):
 
     return line
 
-def plot_distance(terrain_profile,dist_km):
+def plot_distance(terrain_profile,dist_km,transmitter,receiver):
 
     step = dist_km/len(terrain_profile)
     distancias = []
     for i in range(len(terrain_profile)):
         distancias.append(step*i)
 
+    
+
     plt.figure(figsize=(10,6))
+    
     plt.plot(distancias,terrain_profile,'g')
     plt.fill_between(distancias,terrain_profile,color='green')
+    ax = plt.gca()
+    ax.set_ylim([min(terrain_profile)-30, max(terrain_profile)+50])
     #plt.plot([distancias[0],distancias[-1]] ,[elevat[0]+PONTO1.torre, elevat[-1]+PONTO2.torre],'--',color='black',linewidth=0.8)
     #plt.vlines(distancias[0],elevat[0],elevat[0]+PONTO1.torre,colors='r',linewidth=2.0)
     #plt.vlines(distancias[-1],elevat[-1],elevat[-1]+PONTO2.torre,colors='r',linewidth=2.0)
     #plt.ylim(min(elevat)-min(elevat)*0.2, max(elevat)*1.2)     # set the ylim to bottom, top
-    plt.title("Enlace ")
+    plt.title("Enlace " + transmitter['name'] + "<>" + receiver['name'])
+    plt.annotate(str(transmitter['name']),  xy=(0,terrain_profile[0]))
+    plt.annotate(str(receiver['name']),  xy=(dist_km,terrain_profile[-1]),horizontalalignment='right')
     plt.show()
 
 if __name__ == '__main__':
@@ -374,7 +381,7 @@ if __name__ == '__main__':
     main_user_defined_parameters['fmhz']  =  915
 
     #Define distance between terminals in km (from Longley Rice docs)
-    main_user_defined_parameters['d'] = 77.8
+    main_user_defined_parameters['d'] = 0
 
     #Define antenna heights - Antenna 1 height (m) # Antenna 2 height (m)
     main_user_defined_parameters['hg'] = [15, 5]
@@ -422,7 +429,7 @@ if __name__ == '__main__':
 #ENSECADEIRA_MD_JUSANTE= (-54.615278,-25.413056)
 #NOVO_POSTO_SILVA = (-54.675,-25.575)
 
-
+    #sth
     ESTAÇÃO_CENTRAL= (-54.58897424,-25.40798486)
     IATE_CLUBE= (-54.591389,-25.555556)
     PEDRO_ORTELLADO= (-54.615278,-25.413056)
@@ -434,26 +441,40 @@ if __name__ == '__main__':
     ENSECADEIRA_MD_JUSANTE= (-54.615278,-25.413056)
     NOVO_POSTO_SILVA = (-54.675,-25.575)
 
+    #sismo
+    Estacao_Central = (-54.58889,-25.40778)
+    Estacao_Sao_Miguel = (-54.25583,-25.30944)
+    Estacao_Santa_Terezinha_de_Itaipu = (-54.43834,-25.40639)
+    Estacao_Sao_Clemente = (-54.20861,-24.79417)
+    Estacao_Monday = (-54.59972,-25.61389)
+    Estacao_Pikyry = (-54.60333,-25.17833)
+    Estacao_Marangatu= (-54.38806,-24.64667)
+    Estacao_Repetidora_Santa_Fe = (-54.70417,-25.21722)
+
+
 
 
     #Create new geojson for Crystal Palace radio transmitter
     transmitter = {
         'type': 'Feature',
+        'name': "Estacao_Marangatu",
         'geometry': {
             'type': 'Point',
-            'coordinates': ESTAÇÃO_CENTRAL,
+            'coordinates': Estacao_Marangatu,
         },
         'properties': {
             'id': 'Crystal Palace radio transmitter'
         }
     }
+    
 
     #Create new geojson for Mursley
     receiver = {
         'type': 'Feature',
+        'name': "Estacao_Sao_Clemente",
         'geometry': {
             'type': 'Point',
-            'coordinates': PEDRO_ORTELLADO
+            'coordinates': Estacao_Sao_Clemente
         },
         'properties': {
             'id': 'Mursley'
@@ -465,7 +486,7 @@ if __name__ == '__main__':
 
     #Run terrain module
     measured_terrain_profile, distance_km, points = terrain_p2p(
-        os.path.join(dem_folder, 'ASTGTMV003_S26W055_dem.tif'), line)
+        os.path.join(dem_folder, 'S2526W55_dem.tif'), line)
     print('Distance is {}km'.format(distance_km))
 
     #Check (out of interest) how many measurements are in each profile
@@ -473,7 +494,7 @@ if __name__ == '__main__':
     #print('len(original_surface_profile_m) {}'.format(len(original_surface_profile_m)))
    
    
-    plot_distance(measured_terrain_profile,distance_km)
+    plot_distance(measured_terrain_profile,distance_km,transmitter,receiver)
 
 
     main_user_defined_parameters['d'] = distance_km
